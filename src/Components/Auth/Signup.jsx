@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Ensure axios is imported
 import SignUpLogo from "../../assets/Designer.jpeg"; // Import your background image here
+import Dialog from "../IntegrationFile/Dialog/Dialog"; // Ensure this is correctly imported
+import Loading from "../Loading/Loading";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -10,6 +13,14 @@ export default function Signup() {
     email: "",
     githubLink: "",
   });
+
+  const [dialog, setDialog] = useState({
+    open: false,
+    message: "",
+    status: null,
+  });
+
+  const [loading, setLoading] = useState(false); // Added to manage loading state
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -21,10 +32,51 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the signup logic here (e.g., API call)
-    console.log("Signup data:", formData);
-    navigate("/dashboard"); // Navigate to the dashboard after successful signup
+    setLoading(true); // Set loading to true when the form is submitted
+
+    const payload = {
+      name: formData.username,
+      email: formData.email,
+      password: formData.password,
+      organisationname: formData.orgName,
+      organisationgithuburl: formData.githubLink,
+    };
+
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_API_KEY + "user/signUp",
+        payload
+      );
+      console.log(response);
+      if (response.status === 200) {
+        // console.log("success :", response);
+        localStorage.setItem("token", response.data.token);
+        // console.log(localStorage.getItem("token"));
+        navigate("/"); // Navigate to the dashboard after successful signup
+      } else {
+        setDialog({
+          open: true,
+          message: "An error occured" || "An error occurred",
+          status: response.status,
+        });
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log(error);
+        alert(error);
+      }
+    } finally {
+      setLoading(false); // Set loading to false after the request is complete
+    }
   };
+
+  if (loading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -37,7 +89,7 @@ export default function Signup() {
       }}
     >
       <div className="absolute inset-0 bg-black opacity-70"></div>{" "}
-      {/* Add an overlay to darken the background image */}
+      {/* Overlay to darken the background image */}
       <div className="relative z-10 p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold mb-6 text-center text-white">
           Create new account
@@ -110,8 +162,9 @@ export default function Signup() {
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+            disabled={loading} // Disable button during loading
           >
-            Create account
+            {loading ? "Creating account..." : "Create account"}
           </button>
           <div className="mt-4 text-center">
             <span className="text-sm text-white">Already A Member? </span>

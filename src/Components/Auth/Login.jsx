@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginBgImage from "../../assets/Designer.jpeg"; // Import your background image here
+import Loading from "../Loading/Loading";
+import Dialog from "../IntegrationFile/Dialog/Dialog";
+import axios from "axios";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [dialog, setDialog] = useState({
+    open: false,
+    message: "",
+    status: null,
+  });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -12,10 +21,48 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the login logic here (e.g., API call)
-    console.log("Login data:", formData);
-    navigate("/dashboard"); // Navigate to the dashboard after successful login
+    setLoading(true); // Set loading to true when the form is submitted
+
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+    };
+    console.log(payload);
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_API_KEY + "user/login",
+        payload
+      );
+      console.log(response);
+      if (response.status === 200) {
+        console.log("success :", response);
+        localStorage.setItem("token", response.data.token);
+        navigate("/"); // Navigate to the dashboard after successful signup
+      } else {
+        setDialog({
+          open: true,
+          message: "An error occured" || "An error occurred",
+          status: response.status,
+        });
+      }
+    } catch (error) {
+      console.log(error)
+      if (error.response) {
+        console.log(error);
+        alert(error);
+      }
+    } finally {
+      setLoading(false); // Set loading to false after the request is complete
+    }
   };
+
+  if (loading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div

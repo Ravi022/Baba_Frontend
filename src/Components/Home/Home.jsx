@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Loading from "../Loading/Loading";
 import Popup from "./Components/PopUp/PopUp";
 import DropDownTable from "./Components/DropDownTable/DropDownTable";
 import PieActiveArc from "./Components/BarChart/PieActiveArc/PieActiveArc";
 
 export default function Home() {
+  const { links } = useOutletContext();
+  console.log(links);
+
   const [loading, setLoading] = useState(false);
 
   const [popUp, setpopUp] = useState(false);
