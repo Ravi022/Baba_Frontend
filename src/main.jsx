@@ -7,10 +7,11 @@ import Layout from "./Layout.jsx";
 import Home from "./Components/Home/Home.jsx";
 import Login from "./Components/Auth/Login.jsx";
 import Signup from "./Components/Auth/Signup.jsx";
-import RegressionSuit from "./Components/RegressionSuit/RegressionSuit.jsx";
-import DiscoverApi from "./Components/DiscoverApi/DiscoverApi.jsx";
+import RegressionSuite from "./Components/RegressionSuite/RegressionSuite.jsx";
+import ThirdPartyApi from "./Components/ThirdPartyApi/ThirdPartyApi.jsx";
 import Api from "./Components/Api/Api.jsx";
 import UserProfile from "./Components/Header/UserProfile/UserProfile.jsx";
+import Scanner from "./Components/RegressionSuite/Scanner/Scanner.jsx";
 
 const router = createBrowserRouter([
   {
@@ -22,12 +23,12 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/regressionSuit",
-        element: <RegressionSuit />,
+        path: "/regressionSuite",
+        element: <RegressionSuite />,
       },
       {
-        path: "/discoverApi",
-        element: <DiscoverApi />,
+        path: "/thirdPartyApi",
+        element: <ThirdPartyApi />,
       },
       {
         path: "/api",
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/updateProfile",
         element: <UserProfile />,
+      },
+      {
+        path: "/scanner",
+        element: <Scanner />,
       },
     ],
   },

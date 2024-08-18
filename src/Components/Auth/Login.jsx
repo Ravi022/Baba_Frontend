@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoginBgImage from "../../assets/Designer.jpeg"; // Import your background image here
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -17,9 +18,21 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-gray-900 text-white h-screen flex items-center justify-center">
-      <div className="bg-gray-800 p-8 rounded-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center">Login</h2>
+    <div
+      className="h-screen w-full flex items-center justify-center bg-no-repeat bg-gray-900"
+      style={{
+        backgroundImage: `url(${LoginBgImage})`,
+        backgroundSize: "100%", // Zoomed out effect
+        backgroundPosition: "center",
+        opacity: 0.85, // Reduced opacity for the background image
+      }}
+    >
+      <div className="absolute inset-0 bg-black opacity-70"></div>{" "}
+      {/* Add an overlay to darken the background image */}
+      <div className="relative z-10 p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-3xl font-bold mb-6 text-center text-white">
+          Login
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-white">Email Address</label>
@@ -28,7 +41,7 @@ export default function Login() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="bg-gray-700 px-3 py-2 my-3 w-full rounded"
+              className="bg-gray-700 px-3 py-2 my-3 w-full rounded text-white"
               required
             />
           </div>
@@ -39,7 +52,7 @@ export default function Login() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="bg-gray-700 px-3 py-2 my-3 w-full rounded"
+              className="bg-gray-700 px-3 py-2 my-3 w-full rounded text-white"
               required
             />
           </div>
@@ -50,7 +63,7 @@ export default function Login() {
             Login
           </button>
         </form>
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-center text-white">
           <span>Don't have an account? </span>
           <button
             onClick={() => navigate("/signup")}
@@ -60,6 +73,17 @@ export default function Login() {
           </button>
         </div>
       </div>
+      {/* Autofill Styles */}
+      <style jsx={"true"}>{`
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px rgba(55, 65, 81, 1) inset !important;
+          -webkit-text-fill-color: white !important;
+          transition: background-color 5000s ease-in-out 0s;
+        }
+      `}</style>
     </div>
   );
 }

@@ -9,8 +9,8 @@ export default function UserDropDown() {
 
   // Dummy user data, replace with actual data from props or context
   const user = {
-    name: "John Doe",
-    email: "johndoe@example.com",
+    name: "Baba",
+    email: "baba@example.com",
     imageUrl: "https://via.placeholder.com/150", // Replace with actual image URL
   };
 

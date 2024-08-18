@@ -8,12 +8,16 @@ export default function Header() {
 
   const NavigationBar = [
     {
-      title: "Regression Suit",
-      navigateTo: "/regressionSuit",
+      title: "Regression Suite",
+      navigateTo: "/regressionSuite",
     },
     {
-      title: "Discover Api",
-      navigateTo: "/discoverApi",
+      title: "Analyze Third Party Api",
+      navigateTo: "/thirdPartyApi",
+    },
+    {
+      title: "OWASP Discover",
+      navigateTo: "/",
     },
   ];
 
@@ -25,7 +29,7 @@ export default function Header() {
           onClick={() => navigate("/")}
         >
           <img src={Logo} alt="bab_security_logo" className="h-[6vh]" />
-          <div className="text-xl">Baba Security</div>
+          <div className="text-3xl font-semibold">Baba Security</div>
         </div>
       </div>
       <div className="h-cover w-6/12 flex flex-row justify-center items-center">
