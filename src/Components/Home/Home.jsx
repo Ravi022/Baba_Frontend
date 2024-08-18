@@ -34,7 +34,12 @@ export default function Home() {
 
   return (
     <div className="relative p-4 bg-gray-900 h-cover">
-      <DropDownTable popUp={popUp} setpopUp={setpopUp} initial={false} />
+      <DropDownTable
+        popUp={popUp}
+        setpopUp={setpopUp}
+        initial={false}
+        urls={links}
+      />
       {popUp && (
         <Popup
           isOpen={popUp}

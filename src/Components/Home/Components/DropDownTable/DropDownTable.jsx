@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import StickyTable from "../StickyTable/StickyTable";
 import { IoIosArrowDropdown } from "react-icons/io";
 
-const urls = [
+const url = [
   {
     id: 1,
     url: "https://chatgpt.com/c/928bddaf-859c-437a-9b99-1652e0763e90",
@@ -23,9 +23,8 @@ const urls = [
   { id: 12, url: "https://example.com/dummy-url-10" },
 ];
 
-export default function DropDownTable({ popUp, setpopUp, initial }) {
+export default function DropDownTable({ popUp, setpopUp, initial, urls }) {
   const [dropDown, setDropDown] = useState(initial); // dropdown is hidden by default
-
   const toggleDropDown = () => {
     setDropDown((prev) => !prev);
   };

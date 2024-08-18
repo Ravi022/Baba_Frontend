@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 import Header from "./Components/Header/Header";
 import Terminal from "./Components/Terminal/Terminal";
-import axios from "axios";
 import Loading from "./Components/Loading/Loading";
 
 export default function Layout() {
@@ -14,31 +13,64 @@ export default function Layout() {
   const isScannerRoute = location.pathname === "/scanner";
 
   const fetchList = async () => {
-    e.preventDefault();
     setLoading(true); // Set loading to true when the form is submitted
-    const headers={
-      token:localStorage.getItem("token");
-    }
+
+    // Set up the headers correctly
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    };
+
     try {
-      const response = await axios.get(
-        import.meta.env.VITE_API_KEY + "apilinks",
+      // Perform the fetch request
+      const response = await fetch(
+        `${import.meta.env.VITE_API_KEY}apiDiscovery`, // Ensure this is the correct API endpoint
         {
-          headers:{}
+          method: "GET", // GET request
+          headers, // Attach the headers
         }
       );
-      console.log(response);
-      if (response.status === 200) {
-        console.log("success :", response);
-        setLinks(response.data.links);
+
+      // Check if the response is in JSON format by inspecting the Content-Type header
+      const contentType = response.headers.get("Content-Type");
+
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        // Parse the response as JSON
+        data = await response.json();
       } else {
-        alert("An error occured");
+        // If it's not JSON, parse it as text (likely HTML)
+        data = await response.text();
+      }
+
+      if (response.ok) {
+        // If the response status is 200-299
+        console.log("success:", data);
+
+        if (typeof data === "object" && data.apis) {
+          // Parse the 'apis' array and set the links
+          const parsedLinks = data.apis.map((url, index) => ({
+            id: index + 1,
+            url: url,
+          }));
+          setLinks(parsedLinks); // Store parsed links in state
+        } else {
+          console.warn("Unexpected response format:", data);
+          alert("Unexpected response format.");
+        }
+      } else {
+        console.warn("Non-200 response:", data);
+        alert("An error occurred");
       }
     } catch (error) {
-      console.log(error);
-      if (error.response) {
-        console.log(error);
-        alert(error);
+      console.error("Error fetching data:", error);
+      if (error.message === "Failed to fetch") {
+        console.error("Network error or CORS issue detected.");
       }
+      alert(
+        "An error occurred while fetching data. Check the console for details."
+      );
     } finally {
       setLoading(false); // Set loading to false after the request is complete
     }
@@ -55,6 +87,7 @@ export default function Layout() {
       </div>
     );
   }
+
   return (
     <div className="w-full min-h-screen bg-gray-900 text-white relative p-2">
       <div className="p-2 border border-gray-700 mx-2">

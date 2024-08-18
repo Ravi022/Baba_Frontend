@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Ensure axios is imported
 import SignUpLogo from "../../assets/Designer.jpeg"; // Import your background image here
-import Dialog from "../IntegrationFile/Dialog/Dialog"; // Ensure this is correctly imported
 import Loading from "../Loading/Loading";
 
 export default function Signup() {
@@ -12,12 +11,6 @@ export default function Signup() {
     password: "",
     email: "",
     githubLink: "",
-  });
-
-  const [dialog, setDialog] = useState({
-    open: false,
-    message: "",
-    status: null,
   });
 
   const [loading, setLoading] = useState(false); // Added to manage loading state
@@ -41,26 +34,27 @@ export default function Signup() {
       organisationname: formData.orgName,
       organisationgithuburl: formData.githubLink,
     };
-
+    console.log("payload :", payload);
     try {
       const response = await axios.post(
         import.meta.env.VITE_API_KEY + "user/signUp",
         payload
       );
       console.log(response);
-      if (response.status === 200) {
-        // console.log("success :", response);
+      console.log(response.status);
+
+      if (response.status == 201) {
+        console.log("success :", response);
         localStorage.setItem("token", response.data.token);
+        console.log("success");
+        navigate("/");
         // console.log(localStorage.getItem("token"));
-        navigate("/"); // Navigate to the dashboard after successful signup
+        // Navigate to the dashboard after successful signup
       } else {
-        setDialog({
-          open: true,
-          message: "An error occured" || "An error occurred",
-          status: response.status,
-        });
+        alert("An error occured" || "An error occurred");
       }
     } catch (error) {
+      console.log(error);
       if (error.response) {
         console.log(error);
         alert(error);
@@ -178,7 +172,7 @@ export default function Signup() {
         </form>
       </div>
       {/* Autofill Styles */}
-      <style jsx>{`
+      <style>{`
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus,

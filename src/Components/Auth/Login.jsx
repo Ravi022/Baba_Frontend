@@ -121,7 +121,7 @@ export default function Login() {
         </div>
       </div>
       {/* Autofill Styles */}
-      <style jsx={"true"}>{`
+      <style >{`
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus,
