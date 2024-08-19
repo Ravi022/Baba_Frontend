@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-export default function Terminal() {
+export default function Terminal({ terminalOut }) {
   const initialCommands = [
     "[http-missing-security-headers:permissions-policy] [http] [info] https://organization-frontend.vercel.app/",
     "[http-missing-security-headers:clear-site-data] [http] [info] https://organization-frontend.vercel.app/",
@@ -30,9 +30,23 @@ export default function Terminal() {
     "[INF] Templates clustered: 228 (Reduced 201 Requests)",
   ];
 
-  const [commands, setCommands] = useState();
+  const [commands, setCommands] = useState(initialCommands);
   const [input, setInput] = useState("");
   const terminalRef = useRef(null);
+
+  useEffect(() => {
+    // Scroll to the bottom of the terminal when commands array changes
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [commands]);
+
+  useEffect(() => {
+    // Update commands with terminalOut
+    if (terminalOut) {
+      setCommands((prevCommands) => [...prevCommands, terminalOut]);
+    }
+  }, [terminalOut]);
 
   const handleCommandSubmit = (e) => {
     e.preventDefault();
@@ -42,15 +56,8 @@ export default function Terminal() {
     }
   };
 
-  useEffect(() => {
-    // Scroll to the bottom of the terminal when commands array changes
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-    }
-  }, [commands]);
-
   return (
-    <div className="bg-gray-900 text-green-400  font-mono h-[86vh]">
+    <div className="bg-gray-900 text-green-400 font-mono h-[86vh]">
       <div
         className="bg-gray-800 p-4 rounded-lg shadow-md h-full overflow-y-scroll"
         ref={terminalRef} // Reference to the terminal container
@@ -59,14 +66,14 @@ export default function Terminal() {
           <h1 className="text-2xl font-bold text-white">Terminal</h1>
           <p className="text-gray-400">Type your commands below</p>
         </div>
-        {/* <div className="h-[80%] overflow-y-auto">
+        <div className="h-[80%] overflow-y-auto">
           {commands.map((cmd, index) => (
             <div key={index} className="flex items-start">
               <span className="text-green-500">$</span>
               <p className="ml-2 whitespace-pre-wrap">{cmd}</p>
             </div>
           ))}
-        </div> */}
+        </div>
         <form onSubmit={handleCommandSubmit} className="mt-4">
           <div className="flex items-center">
             <span className="text-green-500">$</span>

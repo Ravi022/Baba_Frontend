@@ -10,17 +10,17 @@ const StyledPieChart = styled(PieChart)({
   },
 });
 
-const data = [
-  { id: 0, value: 120, label: "/sitemap.xml", color: "#4e79a7" }, // Soft Blue
-  { id: 1, value: 85, label: "/", color: "#f28e2b" }, // Soft Orange
-  { id: 2, value: 74, label: "/login", color: "#e15759" }, // Soft Red
-  { id: 3, value: 35, label: "/signUp", color: "#76b7b2" }, // Soft Teal
-  { id: 4, value: 40, label: "/importantTasks", color: "#59a14f" }, // Soft Green
-  { id: 5, value: 70, label: "/completedTasks", color: "#edc949" }, // Soft Yellow
-  { id: 6, value: 60, label: "/incompleteTasks", color: "#af7aa1" }, // Soft Purple
-];
+// const data = [
+//   { id: 0, value: 120, label: "/sitemap.xml", color: "#4e79a7" }, // Soft Blue
+//   { id: 1, value: 85, label: "/", color: "#f28e2b" }, // Soft Orange
+//   { id: 2, value: 74, label: "/login", color: "#e15759" }, // Soft Red
+//   { id: 3, value: 35, label: "/signUp", color: "#76b7b2" }, // Soft Teal
+//   { id: 4, value: 40, label: "/importantTasks", color: "#59a14f" }, // Soft Green
+//   { id: 5, value: 70, label: "/completedTasks", color: "#edc949" }, // Soft Yellow
+//   { id: 6, value: 60, label: "/incompleteTasks", color: "#af7aa1" }, // Soft Purple
+// ];
 
-export default function PieActiveArc() {
+export default function PieActiveArc({ data }) {
   return (
     <StyledPieChart
       series={[

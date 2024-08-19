@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import ComboBox from "./ui/ComboBox";
 import { Button } from "@mui/material";
-import axios from "axios"; // Make sure to import axios
-import { useOutletContext } from "react-router-dom";
 import Loading from "../Loading/Loading";
 import StickyTable from "../Home/Components/StickyTable/StickyTable";
+import { useOutletContext } from "react-router-dom";
 
 const options = {
   tags: [
@@ -31,23 +30,8 @@ const options = {
   ],
 };
 
-const rows = [
-  { id: 1, url: "http-missing-security-headers:permissions-policy" },
-  { id: 2, url: "http-missing-security-headers:clear-site-data" },
-  { id: 3, url: "http-missing-security-headers:cross-origin-embedder-policy" },
-  { id: 4, url: "http-missing-security-headers:cross-origin-resource-policy" },
-  { id: 5, url: "http-missing-security-headers:content-security-policy" },
-  { id: 6, url: "http-missing-security-headers:x-frame-options" },
-  { id: 7, url: "http-missing-security-headers:x-content-type-options" },
-  {
-    id: 8,
-    url: "http-missing-security-headers:x-permitted-cross-domain-policies",
-  },
-  { id: 9, url: "http-missing-security-headers:referrer-policy" },
-  { id: 10, url: "http-missing-security-headers:cross-origin-opener-policy" },
-];
 export default function RegressionSuite() {
-  const { links } = useOutletContext();
+  const { links, handleNuclei, nuclei } = useOutletContext();
   const [selectedValues, setSelectedValues] = useState({
     tags: null,
     severity: null,
@@ -55,7 +39,7 @@ export default function RegressionSuite() {
   });
   const [loading, setLoading] = useState(false); // Added loading state
   const [urlOptions, setUrlOptions] = useState([]); // State for storing URL options
-  const [nuclei, setNuclei] = useState();
+  const [extractedIssues, setExtractedIssues] = useState([]); // State for storing processed extracted issues
 
   // Update the URL options when the `links` context changes
   useEffect(() => {
@@ -63,7 +47,22 @@ export default function RegressionSuite() {
       const linkUrls = links.map((link) => link.url); // Extract URL from each link object
       setUrlOptions(linkUrls); // Set the extracted URLs as the options for the dropdown
     }
-  }, [links]);
+
+    // Process nuclei.payload.extractedIssues and convert it to {id, url}
+    if (nuclei && nuclei.payload && nuclei.payload.extractedIssues) {
+      const processedIssues = nuclei.payload.extractedIssues
+        .filter((issue) => {
+          // Filter issues with valid length >= 15
+          const cleanedIssue = issue.replace(/[^a-zA-Z0-9]/g, "");
+          return cleanedIssue.length >= 15;
+        })
+        .map((issue, index) => ({
+          id: index + 1,
+          url: issue,
+        }));
+      setExtractedIssues(processedIssues);
+    }
+  }, [links, nuclei]);
 
   const handleComboBoxChange = (key, value) => {
     setSelectedValues((prevValues) => ({
@@ -72,68 +71,22 @@ export default function RegressionSuite() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // setLoading(true); // Set loading to true when the form is submitted
-
-    const payload = {
-      tags: selectedValues.tags,
-      severity: selectedValues.severity,
-      url: selectedValues.url,
-    };
-
-    console.log(payload);
-    return;
-
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    };
-
+  const handleClick = async () => {
+    setLoading(true); // Start loading state
     try {
-      // Perform the fetch request
-      const response = await fetch(
-        `${import.meta.env.VITE_API_KEY}nuclei`, // Ensure this is the correct API endpoint
-        {
-          method: "POST", // POST request
-          headers, // Attach the headers
-          body: JSON.stringify(payload), // Send the payload as a JSON string
-        }
-      );
-
-      // Check if the response is in JSON format by inspecting the Content-Type header
-      const contentType = response.headers.get("Content-Type");
-
-      let data;
-      if (contentType && contentType.includes("application/json")) {
-        // Parse the response as JSON
-        data = await response.json();
-      } else {
-        // If it's not JSON, parse it as text (likely HTML)
-        data = await response.text();
-      }
-
-      if (response.ok) {
-        // If the response status is 200-299
-        setNuclei(data.payload.terminalOut);
-        console.log("success:", data);
-      } else {
-        console.warn("Non-200 response:", data);
-        alert("An error occurred");
-      }
+      const payload = {
+        tags: selectedValues.tags,
+        severity: selectedValues.severity,
+        url: selectedValues.url,
+      };
+      await handleNuclei(payload); // Wait for the async function to complete
     } catch (error) {
-      console.error("Error submitting data:", error);
-      if (error.message === "Failed to fetch") {
-        console.error("Network error or CORS issue detected.");
-      }
-      alert(
-        "An error occurred while submitting data. Check the console for details."
-      );
+      console.error("Error handling nuclei:", error);
     } finally {
-      setLoading(false); // Set loading to false after the request is complete
+      setLoading(false); // End loading state
     }
   };
+
   if (loading) {
     return (
       <div>
@@ -141,11 +94,12 @@ export default function RegressionSuite() {
       </div>
     );
   }
+  console.log("extractedIssue :", extractedIssues);
 
   return (
     <div className="relative p-4 bg-gray-900 h-[86vh] text-white flex flex-col gap-4">
       <div className="flex flex-col gap-4 items-center p-4">
-        <h2 className="text-xl  text-blue-300 mb-4 from-neutral-200 ">
+        <h2 className="text-xl text-blue-300 mb-4 from-neutral-200">
           Baba Security enables you to run regression tests using various
           templates.
         </h2>
@@ -184,7 +138,7 @@ export default function RegressionSuite() {
                 variant="contained"
                 color="primary"
                 className="mt-4 bg-blue-500 hover:bg-blue-600 text-white"
-                onClick={handleSubmit}
+                onClick={handleClick}
                 disabled={loading} // Disable the button while loading
               >
                 {loading ? "Submitting..." : "Submit"}
@@ -193,20 +147,9 @@ export default function RegressionSuite() {
           </div>
         </div>
       </div>
-      {/* <div
-        style={{
-          whiteSpace: "pre-wrap", // Preserve whitespace and line breaks
-          fontFamily: "monospace", // Use a monospace font for terminal-like appearance
-          backgroundColor: "#1e1e1e", // Dark background for terminal effect
-          color: "#ffffff", // Light text color
-          padding: "10px",
-          borderRadius: "5px",
-        }}
-      >
-        {nuclei}
-      </div> */}
       <div className="p-6">
-        <StickyTable rows={rows} />
+        <StickyTable rows={extractedIssues} />{" "}
+        {/* Use processed extracted issues */}
       </div>
     </div>
   );

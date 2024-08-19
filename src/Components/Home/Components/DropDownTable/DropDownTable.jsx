@@ -2,38 +2,38 @@ import React, { useState } from "react";
 import StickyTable from "../StickyTable/StickyTable";
 import { IoIosArrowDropdown } from "react-icons/io";
 
-const urls = [
-  {
-    id: 1,
-    url: "https://organization-frontend.vercel.app/sitemap.xml...",
-  },
-  {
-    id: 2,
-    url: "https://organization-frontend.vercel.app/",
-  },
-  {
-    id: 3,
-    url: "https://organization-frontend.vercel.app/login",
-  },
-  {
-    id: 4,
-    url: "https://organization-frontend.vercel.app/signUp",
-  },
-  {
-    id: 5,
-    url: "https://organization-frontend.vercel.app/importantTasks",
-  },
-  {
-    id: 6,
-    url: "https://organization-frontend.vercel.app/completedTasks",
-  },
-  {
-    id: 7,
-    url: "https://organization-frontend.vercel.app/incompleteTasks",
-  },
-];
+// const urls = [
+//   {
+//     id: 1,
+//     url: "https://organization-frontend.vercel.app/sitemap.xml...",
+//   },
+//   {
+//     id: 2,
+//     url: "https://organization-frontend.vercel.app/",
+//   },
+//   {
+//     id: 3,
+//     url: "https://organization-frontend.vercel.app/login",
+//   },
+//   {
+//     id: 4,
+//     url: "https://organization-frontend.vercel.app/signUp",
+//   },
+//   {
+//     id: 5,
+//     url: "https://organization-frontend.vercel.app/importantTasks",
+//   },
+//   {
+//     id: 6,
+//     url: "https://organization-frontend.vercel.app/completedTasks",
+//   },
+//   {
+//     id: 7,
+//     url: "https://organization-frontend.vercel.app/incompleteTasks",
+//   },
+// ];
 
-export default function DropDownTable({ popUp, setpopUp, initial, url }) {
+export default function DropDownTable({ popUp, setpopUp, initial, urls }) {
   const [dropDown, setDropDown] = useState(initial); // dropdown is hidden by default
   const toggleDropDown = () => {
     setDropDown((prev) => !prev);
