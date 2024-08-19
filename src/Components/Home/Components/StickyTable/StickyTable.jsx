@@ -8,9 +8,8 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
-const columns = [{ id: "url", label: "URL", minWidth: 100 }];
-
-export default function StickyTable({ rows, setpopUp, popUp }) {
+export default function StickyTable({ rows, setpopUp, popUp, label }) {
+  const columns = [{ id: "url", label: label, minWidth: 100 }];
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -33,7 +32,7 @@ export default function StickyTable({ rows, setpopUp, popUp }) {
       sx={{
         width: "100%",
         overflow: "hidden",
-        backgroundColor: "#4c1d95",
+        backgroundColor: "#581c87",
         color: "#ffffff",
       }}
     >
@@ -43,10 +42,10 @@ export default function StickyTable({ rows, setpopUp, popUp }) {
             <TableRow>
               {columns.map((column) => (
                 <TableCell
-                  key={column.id}
+                  key={column.id} // Directly pass the key here
                   align={column.align}
                   style={{ minWidth: column.minWidth }}
-                  sx={{ color: "#ffffff", backgroundColor: "#4c1d95" }} // Header cell style
+                  sx={{ color: "#ffffff", backgroundColor: "#581c87" }} // Header cell style
                 >
                   {column.label}
                 </TableCell>
@@ -61,14 +60,14 @@ export default function StickyTable({ rows, setpopUp, popUp }) {
                   hover
                   role="checkbox"
                   tabIndex={-1}
-                  key={row.id}
+                  key={row.id} // Directly pass the key here
                   onClick={handleRowClick}
                 >
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
                       <TableCell
-                        key={column.id}
+                        key={`${row.id}-${column.id}`} // Ensure a unique key for each cell
                         align={column.align}
                         onClick={handleRowClick}
                         sx={{
@@ -76,7 +75,9 @@ export default function StickyTable({ rows, setpopUp, popUp }) {
                           whiteSpace: "normal", // Allow the text to wrap to the next line
                           maxWidth: 300, // Set a max width for the cell
                           color: "#ffffff", // Text color
-                          backgroundColor: "#2e1065", // Cell background color
+                          backgroundColor: "#3b0764", // Cell background color
+                          fontFamily: "'Courier New', Courier, monospace", // Change the font of the row
+                          fontSize: "14px", // Adjust font size as needed
                         }}
                       >
                         {value}

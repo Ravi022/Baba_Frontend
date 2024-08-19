@@ -2,7 +2,13 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function ComboBox({ label, options, selectedValue, onChange }) {
+export default function ComboBox({
+  label,
+  options,
+  selectedValue,
+  onChange,
+  width,
+}) {
   return (
     <Autocomplete
       disablePortal
@@ -11,7 +17,7 @@ export default function ComboBox({ label, options, selectedValue, onChange }) {
       value={selectedValue}
       onChange={(event, newValue) => onChange(newValue)}
       sx={{
-        width: 600,
+        width: width,
         backgroundColor: "#1F2937", // Dark background to match the parent
         color: "#FFFFFF", // White text color
         borderRadius: "0.5rem", // Rounded corners

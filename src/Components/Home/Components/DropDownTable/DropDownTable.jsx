@@ -2,28 +2,38 @@ import React, { useState } from "react";
 import StickyTable from "../StickyTable/StickyTable";
 import { IoIosArrowDropdown } from "react-icons/io";
 
-const url = [
+const urls = [
   {
     id: 1,
-    url: "https://chatgpt.com/c/928bddaf-859c-437a-9b99-1652e0763e90",
+    url: "https://organization-frontend.vercel.app/sitemap.xml...",
   },
   {
     id: 2,
-    url: "https://cloud.mongodb.com/v2/66be38d2b5c2e342185dd0c1#/metrics/replicaSet/66be39eb761f5d7c3a5b54dd/explorer/Baba_Management/users/find",
+    url: "https://organization-frontend.vercel.app/",
   },
-  { id: 3, url: "https://example.com/dummy-url-1" },
-  { id: 4, url: "https://example.com/dummy-url-2" },
-  { id: 5, url: "https://example.com/dummy-url-3" },
-  { id: 6, url: "https://example.com/dummy-url-4" },
-  { id: 7, url: "https://example.com/dummy-url-5" },
-  { id: 8, url: "https://example.com/dummy-url-6" },
-  { id: 9, url: "https://example.com/dummy-url-7" },
-  { id: 10, url: "https://example.com/dummy-url-8" },
-  { id: 11, url: "https://example.com/dummy-url-9" },
-  { id: 12, url: "https://example.com/dummy-url-10" },
+  {
+    id: 3,
+    url: "https://organization-frontend.vercel.app/login",
+  },
+  {
+    id: 4,
+    url: "https://organization-frontend.vercel.app/signUp",
+  },
+  {
+    id: 5,
+    url: "https://organization-frontend.vercel.app/importantTasks",
+  },
+  {
+    id: 6,
+    url: "https://organization-frontend.vercel.app/completedTasks",
+  },
+  {
+    id: 7,
+    url: "https://organization-frontend.vercel.app/incompleteTasks",
+  },
 ];
 
-export default function DropDownTable({ popUp, setpopUp, initial, urls }) {
+export default function DropDownTable({ popUp, setpopUp, initial, url }) {
   const [dropDown, setDropDown] = useState(initial); // dropdown is hidden by default
   const toggleDropDown = () => {
     setDropDown((prev) => !prev);

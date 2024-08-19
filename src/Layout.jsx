@@ -25,7 +25,7 @@ export default function Layout() {
     try {
       // Perform the fetch request
       const response = await fetch(
-        `${import.meta.env.VITE_API_KEY}apiDiscovery`, // Ensure this is the correct API endpoint
+        `${import.meta.env.VITE_API_KEY}bearer`, // Ensure this is the correct API endpoint
         {
           method: "GET", // GET request
           headers, // Attach the headers
@@ -50,11 +50,12 @@ export default function Layout() {
 
         if (typeof data === "object" && data.apis) {
           // Parse the 'apis' array and set the links
-          const parsedLinks = data.apis.map((url, index) => ({
-            id: index + 1,
-            url: url,
-          }));
-          setLinks(parsedLinks); // Store parsed links in state
+          // const parsedLinks = data.apis.map((url, index) => ({
+          //   id: index + 1,
+          //   url: url,
+          // }));
+          // setLinks(parsedLinks); // Store parsed links in state
+          console.log("objectType :", data);
         } else {
           console.warn("Unexpected response format:", data);
           alert("Unexpected response format.");
@@ -89,7 +90,7 @@ export default function Layout() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-gray-900 text-white relative p-2">
+    <div className="w-full min-h-screen bg-gray-900 text-white relative p-2 font-sans">
       <div className="p-2 border border-gray-700 mx-2">
         <Header />
       </div>
