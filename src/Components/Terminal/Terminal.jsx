@@ -1,36 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 
 export default function Terminal({ terminalOut }) {
-  const initialCommands = [
-    "[http-missing-security-headers:permissions-policy] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:clear-site-data] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:cross-origin-embedder-policy] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:cross-origin-resource-policy] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:content-security-policy] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:x-frame-options] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:x-content-type-options] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:x-permitted-cross-domain-policies] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:referrer-policy] [http] [info] https://organization-frontend.vercel.app/",
-    "[http-missing-security-headers:cross-origin-opener-policy] [http] [info] https://organization-frontend.vercel.app/",
-    "                     __     _",
-    "   ____  __  _______/ /__  (_)",
-    "  / __ \\/ / / / ___/ / _ \\/ /",
-    " / / / / /_/ / /__/ /  __/ /",
-    "/_/ /_/\\__,_/\\___/_/\\___/_/   v3.3.1",
-    "",
-    "        projectdiscovery.io",
-    "",
-    "[INF] Current nuclei version: v3.3.1 (latest)",
-    "[INF] Current nuclei-templates version: v9.9.3 (latest)",
-    "[WRN] Scan results upload to cloud is disabled.",
-    "[INF] New templates added in latest release: 56",
-    "[INF] Templates loaded for current scan: 677",
-    "[INF] Executing 677 signed templates from projectdiscovery/nuclei-templates",
-    "[INF] Targets loaded for current scan: 1",
-    "[INF] Templates clustered: 228 (Reduced 201 Requests)",
-  ];
+  console.log("terminalOut :", terminalOut);
 
-  const [commands, setCommands] = useState(initialCommands);
+  const [commands, setCommands] = useState(terminalOut);
   const [input, setInput] = useState("");
   const terminalRef = useRef(null);
 
@@ -60,7 +33,7 @@ export default function Terminal({ terminalOut }) {
     <div className="bg-gray-900 text-green-400 font-mono h-[86vh]">
       <div
         className="bg-gray-800 p-4 rounded-lg shadow-md h-full overflow-y-scroll"
-        ref={terminalRef} // Reference to the terminal container
+        ref={terminalRef} // Attach the ref here to the container holding the commands
       >
         <div className="mb-4">
           <h1 className="text-2xl font-bold text-white">Terminal</h1>

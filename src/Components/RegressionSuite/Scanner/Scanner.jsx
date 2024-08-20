@@ -40,7 +40,7 @@ export default function Scanner() {
 
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_KEY}bearer`, // Ensure this is the correct API endpoint
+          `http://3.6.112.142:3000/bearer`, // Ensure this is the correct API endpoint
           {
             method: "GET",
             headers,
@@ -132,14 +132,14 @@ export default function Scanner() {
                 }))
               : []
           );
-          // const owasp = data.payload.owaspData
-          //   ? data.payload.owaspData.map((api, index) => ({
-          //       id: index + 1,
-          //       url: api,
-          //     }))
-          //   : [];
-          // localStorage.setItem("owasp", JSON.stringify(owasp));
-          // console.log("owasp :", owasp);
+          const owasp = data.payload.owaspData
+            ? data.payload.owaspData.map((api, index) => ({
+                id: index + 1,
+                url: api,
+              }))
+            : [];
+          localStorage.setItem("owasp", JSON.stringify(owasp));
+          console.log("owasp :", owasp);
         } else {
           console.error("API call failed with non-200 status:", data);
         }
@@ -169,11 +169,11 @@ export default function Scanner() {
   // }
 
   return (
-    <div className="absolute bg-gray-900 w-full h-[80vh] flex justify-center items-center">
+    <div className="absolute bg-gray-900 w-screen h-[80vh] flex justify-center items-center">
       {/* First half */}
-      <div className="w-1/2 h-full p-4 overflow-y-scroll">
+      <div className="w-1/2 h-full p-4 overflow-y-scroll mr-8">
         <h2 className="text-white text-xl mb-4 w-full flex flex-row justify-center">
-          Owasp Top 10
+          Current Scan History
         </h2>
         <div className="flex flex-col justify-center items-center gap-6">
           <StickyTable
@@ -212,7 +212,7 @@ export default function Scanner() {
       </div>
 
       {/* Second half */}
-      <div className="w-1/2 h-full p-4 overflow-y-scroll">
+      <div className="w-1/2 h-full p-4 overflow-y-scroll mr-8">
         <h2 className="text-white text-xl mb-4">Previous Scan History</h2>
         <div className="flex flex-col gap-6">
           <StickyTable

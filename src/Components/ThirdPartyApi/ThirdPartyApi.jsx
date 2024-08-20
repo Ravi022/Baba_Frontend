@@ -6,13 +6,25 @@ import StickyTable from "../Home/Components/StickyTable/StickyTable";
 import Loading from "../Loading/Loading";
 
 export default function ThirdPartyApi() {
-  const { handleTestApi, handleNuclei, nuclei } = useOutletContext();
+  const { fetchVulnApi, handleNuclei, nuclei, vulnapi } = useOutletContext();
+  console.log(vulnapi);
+
   const [loading, setLoading] = useState(false);
   const [isCard1Open, setIsCard1Open] = useState(false);
   const [isCard2Open, setIsCard2Open] = useState(false);
   const [extractedIssues, setExtractedIssues] = useState([]);
   const [popUp, setpopUp] = useState(false); // New state for popUp
   const [shrink, setShrink] = useState(false); // New state for shrink
+
+  // State for the first input field in Card 1
+  const [testApiUrlCard1, setTestApiUrlCard1] = useState("");
+
+  // State for the second input field in Card 2 (part of selectedValues)
+  const [selectedValues, setSelectedValues] = useState({
+    url: "",
+    tags: "",
+    severity: "",
+  });
 
   useEffect(() => {
     if (nuclei?.payload?.extractedIssues) {
@@ -43,25 +55,9 @@ export default function ThirdPartyApi() {
       "misconfig",
     ],
     severity: ["info", "high", "medium", "critical", "low"],
-    url: [
-      "https://organization-frontend.vercel.app/sitemap.xml...",
-      "https://organization-frontend.vercel.app/",
-      "https://organization-frontend.vercel.app/login",
-      "https://organization-frontend.vercel.app/signUp",
-      "https://organization-frontend.vercel.app/importantTasks",
-      "https://organization-frontend.vercel.app/completedTasks",
-      "https://organization-frontend.vercel.app/incompleteTasks",
-    ],
   };
 
-  const [selectedValues, setSelectedValues] = useState({
-    url: "",
-    tags: "",
-    severity: "",
-  });
-
-  const [testApiUrl, setTestApiUrl] = useState("");
-
+  // Handle ComboBox changes for the second input field in Card 2
   const handleComboBoxChange = (field, value) => {
     setSelectedValues((prevValues) => ({
       ...prevValues,
@@ -69,6 +65,7 @@ export default function ThirdPartyApi() {
     }));
   };
 
+  // Handle submission for Card 2
   const handleClick = async () => {
     setLoading(true);
     try {
@@ -77,7 +74,9 @@ export default function ThirdPartyApi() {
         severity: selectedValues.severity,
         url: selectedValues.url,
       };
-      await handleNuclei(payload);
+      // await handleNuclei(payload);
+      await handlethirdpartySast(payload);
+      console.log(payload);
     } catch (error) {
       console.error("Error handling nuclei:", error);
     } finally {
@@ -85,16 +84,11 @@ export default function ThirdPartyApi() {
     }
   };
 
-  const payloadTestApi = () => {
-    return {
-      url: testApiUrl,
-    };
-  };
-
+  // Handle submission for Card 1
   const handleOnClick = async () => {
-    const payload = payloadTestApi();
+    const payload = { url: testApiUrlCard1 };
     try {
-      await handleTestApi(payload);
+      await fetchVulnApi(payload);
       console.log("Payload submitted:", payload);
     } catch (error) {
       console.error("Error handling Test API:", error);
@@ -126,8 +120,8 @@ export default function ThirdPartyApi() {
             <input
               placeholder="Test Api"
               className="p-2 w-full bg-gray-700 text-white rounded-md"
-              value={testApiUrl}
-              onChange={(e) => setTestApiUrl(e.target.value)}
+              value={testApiUrlCard1}
+              onChange={(e) => setTestApiUrlCard1(e.target.value)}
             />
             <div className="w-full flex justify-center">
               <Button
@@ -157,12 +151,13 @@ export default function ThirdPartyApi() {
         {isCard2Open && (
           <div className="flex flex-col gap-4 items-center p-4 bg-gray-800 rounded-md shadow-md">
             <div className="flex flex-col gap-3 w-full items-center text-white">
-              <ComboBox
-                label="URL"
-                options={options.url}
-                selectedValue={selectedValues.url}
-                onChange={(value) => handleComboBoxChange("url", value)}
-                width={600}
+              <input
+                placeholder="Url"
+                className="p-2 w-1/2 bg-gray-700 text-white rounded-md "
+                value={selectedValues.url}
+                onChange={(e) =>
+                  setSelectedValues({ ...selectedValues, url: e.target.value })
+                }
               />
               <div className="flex flex-row gap-3">
                 <ComboBox
