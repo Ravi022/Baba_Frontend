@@ -37,7 +37,7 @@ export default function Signup() {
     console.log("payload :", payload);
     try {
       const response = await axios.post(
-        import.meta.env.VITE_API_KEY + "user/signUp",
+        "http://3.6.112.142:3000" + "/user/signUp",
         payload
       );
       console.log(response);
