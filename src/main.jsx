@@ -1,5 +1,6 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
+import { useNavigate } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -13,6 +14,20 @@ import Api from "./Components/Api/Api.jsx";
 import UserProfile from "./Components/Header/UserProfile/UserProfile.jsx";
 import Scanner from "./Components/RegressionSuite/Scanner/Scanner.jsx";
 
+// ProtectedRoute component
+const ProtectedRoute = ({ element }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login"); // Redirect to login if no token is found
+    }
+  }, [navigate]);
+
+  return element; // Render the passed component if the token is present
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -20,27 +35,27 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <ProtectedRoute element={<Home />} />, // Protect this route
       },
       {
         path: "/regressionSuite",
-        element: <RegressionSuite />,
+        element: <ProtectedRoute element={<RegressionSuite />} />, // Protect this route
       },
       {
         path: "/thirdPartyApi",
-        element: <ThirdPartyApi />,
+        element: <ProtectedRoute element={<ThirdPartyApi />} />, // Protect this route
       },
       {
         path: "/api",
-        element: <Api />,
+        element: <ProtectedRoute element={<Api />} />, // Protect this route
       },
       {
         path: "/updateProfile",
-        element: <UserProfile />,
+        element: <ProtectedRoute element={<UserProfile />} />, // Protect this route
       },
       {
         path: "/scanner",
-        element: <Scanner />,
+        element: <ProtectedRoute element={<Scanner />} />, // Protect this route
       },
     ],
   },

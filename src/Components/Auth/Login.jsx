@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoginBgImage from "../../assets/Designer_main.jpg"; // Import your background image here
+import LoginBgImage from "../../assets/Designer.jpeg"; // Import your background image here
 import Loading from "../Loading/Loading";
 import Dialog from "../IntegrationFile/Dialog/Dialog";
 import axios from "axios";

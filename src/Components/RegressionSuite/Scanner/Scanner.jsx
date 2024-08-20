@@ -5,7 +5,7 @@ import Loading from "../../Loading/Loading";
 export default function Scanner() {
   const [popUp, setpopUp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [scanner, setScanner] = useState(null); // Updated to initialize as `null`
+  const [scanner, setScanner] = useState(null);
 
   const [currentCritical, setCurrentCritical] = useState([]);
   const [currentHigh, setCurrentHigh] = useState([]);
@@ -39,13 +39,10 @@ export default function Scanner() {
       };
 
       try {
-        const response = await fetch(
-          `http://3.6.112.142:3000/bearer`, // Ensure this is the correct API endpoint
-          {
-            method: "GET",
-            headers,
-          }
-        );
+        const response = await fetch(`http://3.6.112.142:3000/bearer`, {
+          method: "GET",
+          headers,
+        });
 
         const contentType = response.headers.get("Content-Type");
         let data;
@@ -60,10 +57,12 @@ export default function Scanner() {
           console.log("API call successful:", data);
           setScanner(data); // Store the fetched data in `scanner` state
 
-          // Map the data into state variables
+          // Safely access data.payload to avoid errors
+          const payload = data.payload || {};
+
           setCurrentCritical(
-            data.payload.CRITICAL
-              ? data.payload.CRITICAL.map((api, index) => ({
+            payload.CRITICAL
+              ? payload.CRITICAL.map((api, index) => ({
                   id: index + 1,
                   url: api,
                 }))
@@ -71,8 +70,8 @@ export default function Scanner() {
           );
 
           setCurrentHigh(
-            data.payload.HIGH
-              ? data.payload.HIGH.map((api, index) => ({
+            payload.HIGH
+              ? payload.HIGH.map((api, index) => ({
                   id: index + 1,
                   url: api,
                 }))
@@ -80,8 +79,8 @@ export default function Scanner() {
           );
 
           setCurrentLow(
-            data.payload.LOW
-              ? data.payload.LOW.map((api, index) => ({
+            payload.LOW
+              ? payload.LOW.map((api, index) => ({
                   id: index + 1,
                   url: api,
                 }))
@@ -89,8 +88,8 @@ export default function Scanner() {
           );
 
           setCurrentMedium(
-            data.payload.MEDIUM
-              ? data.payload.MEDIUM.map((api, index) => ({
+            payload.MEDIUM
+              ? payload.MEDIUM.map((api, index) => ({
                   id: index + 1,
                   url: api,
                 }))
@@ -98,8 +97,8 @@ export default function Scanner() {
           );
 
           setHistoryCritical(
-            data.payload.history?.CRITICAL
-              ? data.payload.history.CRITICAL.map((api, index) => ({
+            payload.history?.CRITICAL
+              ? payload.history.CRITICAL.map((api, index) => ({
                   id: index + 1,
                   url: api,
                 }))
@@ -107,8 +106,8 @@ export default function Scanner() {
           );
 
           setHistoryHigh(
-            data.payload.history?.HIGH
-              ? data.payload.history.HIGH.map((api, index) => ({
+            payload.history?.HIGH
+              ? payload.history.HIGH.map((api, index) => ({
                   id: index + 1,
                   url: api,
                 }))
@@ -116,8 +115,8 @@ export default function Scanner() {
           );
 
           setHistoryLow(
-            data.payload.history?.LOW
-              ? data.payload.history.LOW.map((api, index) => ({
+            payload.history?.LOW
+              ? payload.history.LOW.map((api, index) => ({
                   id: index + 1,
                   url: api,
                 }))
@@ -125,21 +124,23 @@ export default function Scanner() {
           );
 
           setHistoryMedium(
-            data.payload.history?.MEDIUM
-              ? data.payload.history.MEDIUM.map((api, index) => ({
+            payload.history?.MEDIUM
+              ? payload.history.MEDIUM.map((api, index) => ({
                   id: index + 1,
                   url: api,
                 }))
               : []
           );
-          const owasp = data.payload.owaspData
-            ? data.payload.owaspData.map((api, index) => ({
+
+          const owasp = payload.owaspData
+            ? payload.owaspData.map((api, index) => ({
                 id: index + 1,
                 url: api,
               }))
             : [];
           localStorage.setItem("owasp", JSON.stringify(owasp));
-          console.log("owasp :", owasp);
+          setowaspData(owasp);
+          console.log("OWASP Data:", owasp);
         } else {
           console.error("API call failed with non-200 status:", data);
         }
@@ -164,14 +165,23 @@ export default function Scanner() {
     );
   }
 
-  // if (!scanner) {
-  //   return <div className="text-white">No data available</div>;
-  // }
-
   return (
     <div className="absolute bg-gray-900 w-screen h-[80vh] flex justify-center items-center">
       {/* First half */}
       <div className="w-1/2 h-full p-4 overflow-y-scroll mr-8">
+        <h2 className="text-white text-xl mb-4 w-full flex flex-row justify-center">
+          OWASP Top 10
+        </h2>
+        <div className="flex flex-row justify-center text-xl mb-4 text-white">
+          <StickyTable
+            rows={owaspData} // Use the OWASP data fetched from the API
+            setpopUp={setpopUp}
+            popUp={popUp}
+            label={"Owasp Top 10"}
+            shrink={shrinkOwasp}
+            setShrink={setShrinkOwasp}
+          />
+        </div>
         <h2 className="text-white text-xl mb-4 w-full flex flex-row justify-center">
           Current Scan History
         </h2>

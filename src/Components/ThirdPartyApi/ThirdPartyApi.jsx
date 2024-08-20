@@ -4,10 +4,20 @@ import Button from "@mui/material/Button";
 import { useOutletContext } from "react-router-dom";
 import StickyTable from "../Home/Components/StickyTable/StickyTable";
 import Loading from "../Loading/Loading";
+import { IoCloudDownloadSharp } from "react-icons/io5";
 
 export default function ThirdPartyApi() {
-  const { fetchVulnApi, handleNuclei, nuclei, vulnapi } = useOutletContext();
+  const {
+    fetchVulnApi,
+    handleNuclei,
+    nuclei,
+    vulnapi,
+    handlethirdpartySast,
+    thirdPartySast,
+    terminalOut,
+  } = useOutletContext();
   console.log(vulnapi);
+  console.log(thirdPartySast);
 
   const [loading, setLoading] = useState(false);
   const [isCard1Open, setIsCard1Open] = useState(false);
@@ -27,9 +37,11 @@ export default function ThirdPartyApi() {
   });
 
   useEffect(() => {
-    if (nuclei?.payload?.extractedIssues) {
-      const processedIssues = nuclei.payload.extractedIssues
+    // Process nuclei.payload.extractedIssues and convert it to {id, url}
+    if (thirdPartySast && thirdPartySast.extractedIssues) {
+      const processedIssues = thirdPartySast.extractedIssues
         .filter((issue) => {
+          // Filter issues with valid length >= 15
           const cleanedIssue = issue.replace(/[^a-zA-Z0-9]/g, "");
           return cleanedIssue.length >= 15;
         })
@@ -39,7 +51,22 @@ export default function ThirdPartyApi() {
         }));
       setExtractedIssues(processedIssues);
     }
-  }, [nuclei]);
+  }, [thirdPartySast]);
+
+  // useEffect(() => {
+  //   if (nuclei?.payload?.extractedIssues) {
+  //     const processedIssues = nuclei.payload.extractedIssues
+  //       .filter((issue) => {
+  //         const cleanedIssue = issue.replace(/[^a-zA-Z0-9]/g, "");
+  //         return cleanedIssue.length >= 15;
+  //       })
+  //       .map((issue, index) => ({
+  //         id: index + 1,
+  //         url: issue,
+  //       }));
+  //     setExtractedIssues(processedIssues);
+  //   }
+  // }, [nuclei]);
 
   const options = {
     tags: [
@@ -93,6 +120,23 @@ export default function ThirdPartyApi() {
     } catch (error) {
       console.error("Error handling Test API:", error);
     }
+  };
+
+  const handleDownloadClick = () => {
+    const fileContent = {
+      terminalOutput: terminalOut || "No terminal output available",
+      thirdPartySast: thirdPartySast || "No third-party SAST data available",
+    };
+
+    const blob = new Blob([JSON.stringify(fileContent, null, 2)], {
+      type: "application/json",
+    });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "thirdPartySast_and_terminalOut.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (loading) {
@@ -187,7 +231,7 @@ export default function ThirdPartyApi() {
                 onClick={handleClick}
                 disabled={loading}
               >
-                {loading ? "Submitting..." : "Submit"}
+                Submit
               </Button>
             </div>
           </div>
@@ -197,14 +241,26 @@ export default function ThirdPartyApi() {
       {/* StickyTable Section */}
       <div className="p-6">
         {extractedIssues.length > 0 ? (
-          <StickyTable
-            rows={extractedIssues}
-            setpopUp={setpopUp}
-            popUp={popUp}
-            label={"Results from regression testing"}
-            shrink={shrink}
-            setShrink={setShrink}
-          />
+          <>
+            <div
+              className="flex flex-row gap-3 justify-end itmes-center p-3 "
+              onClick={handleDownloadClick}
+            >
+              <span className="text-purple-600 font-bold">
+                {" "}
+                Download Result
+              </span>{" "}
+              <IoCloudDownloadSharp className="text-2xl fill-purple-700" />
+            </div>
+            <StickyTable
+              rows={extractedIssues}
+              setpopUp={setpopUp}
+              popUp={popUp}
+              label={"Results from regression testing"}
+              shrink={shrink}
+              setShrink={setShrink}
+            />
+          </>
         ) : (
           <div className="text-white flex flex-row justify-center ">
             No issues found.
