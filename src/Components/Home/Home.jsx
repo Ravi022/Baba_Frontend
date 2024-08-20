@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import Loading from "../Loading/Loading";
 import Popup from "./Components/PopUp/PopUp";
@@ -7,7 +7,7 @@ import PieActiveArc from "./Components/BarChart/PieActiveArc/PieActiveArc";
 import StickyTable from "./Components/StickyTable/StickyTable";
 
 export default function Home() {
-  const { links } = useOutletContext();
+  const { links, fetchList } = useOutletContext();
 
   console.log(links);
 
@@ -74,6 +74,30 @@ export default function Home() {
     setpopUp(false);
   };
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       await fetchList();
+  //       console.log("Payload submitted:", payload);
+  //     } catch (error) {
+  //       console.error("Error handling Test API:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       await fetchList();
+  //     } catch (error) {
+  //       console.error("Error handling Test API:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
   if (loading) {
     return (
       <div>
@@ -82,9 +106,12 @@ export default function Home() {
     );
   }
   console.log(apisState);
-  console.log(reqReceivedState);
-  console.log(responseCodesPerEndpointState);
-  // console.log("localStorage:",localStorage.getItem("owasp"));
+  console.log("reqReceived:", reqReceivedState);
+  console.log(
+    "responseCodesperEndpointsState :",
+    responseCodesPerEndpointState
+  );
+  // console.log("localStorage:", JSON.parse(localStorage.getItem("owasp")));
   // const owasp = localStorage.getItem("owasp");
   return (
     <div className="relative p-4 bg-gray-900 h-cover">
@@ -93,7 +120,7 @@ export default function Home() {
           {" "}
           <StickyTable
             rows={owasp} // Use the critical data fetched from the API
-            label={"Owasp"}
+            label={"Owasp Top 10"}
             shrink={shrinkOwasp}
             setShrink={setShrinkOwasp}
           />
@@ -107,20 +134,19 @@ export default function Home() {
         setpopUp={setpopUp}
         initial={false}
         urls={apisState}
+        label={"All Discovered Api's"}
       />
-      {/* {popUp && (
-        <Popup
-          isOpen={popUp}
-          onClose={onClose}
-          navigationOptions={navigationOptions}
-        />
-      )} */}
-      <div className="py-3 mt-6">
+      <div className="py-3 mt-6 border border-gray-800">
         {/* Pass the pie chart data including colors */}
+        <div className="text-gray-300 p-2 text-center mr-20 font mb-2">
+          Request Received
+        </div>
         <PieActiveArc data={reqReceivedState} />
       </div>
-      <hr />
-      <div>
+      <div className="py-t mt-6 border border-gray-800">
+        <div className="text-gray-300 p-2 flex flex-row justify-center items-center font mr-10">
+          Response Code Per End Point
+        </div>
         <PieActiveArc data={responseCodesPerEndpointState} />
       </div>
     </div>

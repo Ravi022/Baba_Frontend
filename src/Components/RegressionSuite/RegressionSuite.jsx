@@ -19,19 +19,11 @@ const options = {
     "misconfig",
   ],
   severity: ["info", "high", "medium", "critical", "low"],
-  url: [
-    "https://organization-frontend.vercel.app/sitemap.xml...",
-    "https://organization-frontend.vercel.app/",
-    "https://organization-frontend.vercel.app/login",
-    "https://organization-frontend.vercel.app/signUp",
-    "https://organization-frontend.vercel.app/importantTasks",
-    "https://organization-frontend.vercel.app/completedTasks",
-    "https://organization-frontend.vercel.app/incompleteTasks",
-  ],
 };
 
 export default function RegressionSuite() {
-  const { links, handleNuclei, nuclei } = useOutletContext();
+  const { links, handleNuclei, nuclei,fetchList } = useOutletContext();
+  console.log(links.apis);
   const [selectedValues, setSelectedValues] = useState({
     tags: null,
     severity: null,
@@ -40,12 +32,13 @@ export default function RegressionSuite() {
   const [loading, setLoading] = useState(false); // Added loading state
   const [urlOptions, setUrlOptions] = useState([]); // State for storing URL options
   const [extractedIssues, setExtractedIssues] = useState([]); // State for storing processed extracted issues
+  const [shrinkTable, setShrinkTable] = useState(false);
 
   // Update the URL options when the `links` context changes
   useEffect(() => {
-    if (links && links.length > 0) {
-      const linkUrls = links.map((link) => link.url); // Extract URL from each link object
-      setUrlOptions(linkUrls); // Set the extracted URLs as the options for the dropdown
+    if (links && links.apis && links.apis.length > 0) {
+      setUrlOptions(links.apis); // Set the URLs directly as the options for the dropdown
+      console.log("links :", links.apis);
     }
 
     // Process nuclei.payload.extractedIssues and convert it to {id, url}
@@ -87,6 +80,7 @@ export default function RegressionSuite() {
     }
   };
 
+
   if (loading) {
     return (
       <div>
@@ -95,6 +89,7 @@ export default function RegressionSuite() {
     );
   }
   console.log("extractedIssue :", extractedIssues);
+  console.log("urlOptions :", urlOptions);
 
   return (
     <div className="relative p-4 bg-gray-900 h-[86vh] text-white flex flex-col gap-4">
@@ -107,7 +102,7 @@ export default function RegressionSuite() {
           <div className="flex flex-col gap-3 w-full items-center text-white">
             <ComboBox
               label="URL"
-              options={options.url} // Use the dynamic URL options here
+              options={urlOptions} // Use the dynamic URL options here
               selectedValue={selectedValues.url}
               onChange={(value) => handleComboBoxChange("url", value)}
               width={600}
@@ -147,10 +142,19 @@ export default function RegressionSuite() {
           </div>
         </div>
       </div>
-      <div className="p-6">
-        <StickyTable rows={extractedIssues} />{" "}
-        {/* Use processed extracted issues */}
-      </div>
+      {extractedIssues ? (
+        <div className="p-6">
+          <StickyTable
+            rows={extractedIssues}
+            label={"Nuclei Result"}
+            shrink={shrinkTable}
+            setShrink={setShrinkTable}
+          />{" "}
+          {/* Use processed extracted issues */}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

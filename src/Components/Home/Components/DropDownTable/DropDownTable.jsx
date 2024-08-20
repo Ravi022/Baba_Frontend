@@ -33,8 +33,15 @@ import { IoIosArrowDropdown } from "react-icons/io";
 //   },
 // ];
 
-export default function DropDownTable({ popUp, setpopUp, initial, urls }) {
+export default function DropDownTable({
+  popUp,
+  setpopUp,
+  initial,
+  urls,
+  label,
+}) {
   const [dropDown, setDropDown] = useState(initial); // dropdown is hidden by default
+  const [shrinkStickyTable, setShrinkStickyTable] = useState(false);
   const toggleDropDown = () => {
     setDropDown((prev) => !prev);
   };
@@ -51,15 +58,21 @@ export default function DropDownTable({ popUp, setpopUp, initial, urls }) {
         </button>
       </div>
       <div>
-        <h1 className="text-2xl font-bold mb-4 flex flex-row justify-center items-center">
-          API URLs
-        </h1>
         <div
           className={`bg-gray-800 overflow-hidden transition-all duration-500 ease-in-out ${
             dropDown ? "max-h-0 opacity-0" : "max-h-screen opacity-100"
           }`}
         >
-          <StickyTable rows={urls} setpopUp={setpopUp} popUp={popUp} />
+          <StickyTable
+            rows={urls}
+            setpopUp={setpopUp}
+            popUp={popUp}
+            label={label}
+            shrink={shrinkStickyTable}
+            setShrink={setShrinkStickyTable}
+            // shrink={shrinkLow}
+            // setShrink={setShrinkLow}
+          />
         </div>
       </div>
     </div>

@@ -36,7 +36,7 @@ const Layout = () => {
     };
     try {
       const response = await axios.post(
-        import.meta.env.VITE_API_KEY + "auth/token",
+       "http://localhost:3000/" + "auth/token",
         body,
         config
       );

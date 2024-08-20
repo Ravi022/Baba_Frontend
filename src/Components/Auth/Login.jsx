@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LoginBgImage from "../../assets/Designer.jpeg"; // Import your background image here
+import LoginBgImage from "../../assets/Designer_main.jpg"; // Import your background image here
 import Loading from "../Loading/Loading";
 import Dialog from "../IntegrationFile/Dialog/Dialog";
 import axios from "axios";
@@ -30,7 +30,7 @@ export default function Login() {
     console.log(payload);
     try {
       const response = await axios.post(
-        import.meta.env.VITE_API_KEY + "user/login",
+        "http://3.6.112.142:3000/" + "user/login",
         payload
       );
       console.log(response);
@@ -46,7 +46,7 @@ export default function Login() {
         });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       if (error.response) {
         console.log(error);
         alert(error);
@@ -76,7 +76,7 @@ export default function Login() {
     >
       <div className="absolute inset-0 bg-black opacity-70"></div>{" "}
       {/* Add an overlay to darken the background image */}
-      <div className="relative z-10 p-8 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg w-full max-w-md">
+      <div className="relative z-10 p-8 bg-gray-800 bg-opacity-90 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold mb-6 text-center text-white">
           Login
         </h2>
@@ -121,7 +121,7 @@ export default function Login() {
         </div>
       </div>
       {/* Autofill Styles */}
-      <style >{`
+      <style>{`
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus,
