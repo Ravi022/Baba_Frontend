@@ -36,6 +36,7 @@ export default function Scanner() {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "x-vercel-protection-bypass": "D1g4beix8PAQYjhUVAd0vbrZgBr0i8Po",
       };
 
       try {

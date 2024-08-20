@@ -24,6 +24,7 @@ export default function Layout() {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "x-vercel-protection-bypass": "D1g4beix8PAQYjhUVAd0vbrZgBr0i8Po",
     };
 
     try {
@@ -68,6 +69,7 @@ export default function Layout() {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "x-vercel-protection-bypass": "D1g4beix8PAQYjhUVAd0vbrZgBr0i8Po",
     };
 
     try {
@@ -111,13 +113,14 @@ export default function Layout() {
   };
   const handlethirdpartySast = async (payload) => {
     console.log("Payload:", payload);
-  
+
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "x-vercel-protection-bypass": "D1g4beix8PAQYjhUVAd0vbrZgBr0i8Po",
     };
-  
+
     try {
       console.log("Starting third-party SAST request...");
       const response = await fetch(`http://3.6.112.142:3000/thirdpartySast`, {
@@ -125,26 +128,26 @@ export default function Layout() {
         headers,
         body: JSON.stringify(payload),
       });
-  
+
       console.log("Response received.");
-  
+
       const contentType = response.headers.get("Content-Type");
       let data;
-  
+
       if (contentType && contentType.includes("application/json")) {
         data = await response.json();
       } else {
         data = await response.text();
       }
-  
+
       console.log("Response Data:", data);
-  
+
       if (response.ok) {
         // Ensure extractedIssues and termOut are present in the response data
         if (data && data.extractedIssues && data.termOut) {
           console.log("Extracted Issues:", data.extractedIssues);
           console.log("Terminal Output:", data.termOut);
-  
+
           // Update state with the extracted issues and terminal output
           setThirdPartySast(data);
           setTerminalOut(data.termOut); // Store terminal output
@@ -167,7 +170,7 @@ export default function Layout() {
       setLoading(false);
     }
   };
-  
+
   const handleTestApi = async (payload) => {
     console.log(payload);
 
@@ -175,6 +178,7 @@ export default function Layout() {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "x-vercel-protection-bypass": "D1g4beix8PAQYjhUVAd0vbrZgBr0i8Po",
     };
 
     try {
@@ -224,6 +228,7 @@ export default function Layout() {
       // Accept: "application/json",
       "Content-Type": "application/json",
       // Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "x-vercel-protection-bypass": "D1g4beix8PAQYjhUVAd0vbrZgBr0i8Po",
     };
 
     try {
@@ -321,7 +326,7 @@ export default function Layout() {
               vulnapi,
               handlethirdpartySast,
               thirdPartySast,
-              terminalOut
+              terminalOut,
             }}
           />
         </div>
