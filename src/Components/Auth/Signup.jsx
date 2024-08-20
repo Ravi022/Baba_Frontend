@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Ensure axios is imported
+
 import SignUpLogo from "../../assets/Designer.jpeg"; // Import your background image here
 import Loading from "../Loading/Loading";
 
@@ -26,7 +26,7 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Set loading to true when the form is submitted
-
+  
     const payload = {
       name: formData.username,
       email: formData.email,
@@ -35,35 +35,37 @@ export default function Signup() {
       organisationgithuburl: formData.githubLink,
     };
     console.log("payload :", payload);
+  
     try {
-      const response = await axios.post(
-        "http://3.6.112.142:3000" + "/user/signUp",
-        payload
-      );
-      console.log(response);
+      const response = await fetch("http://3.6.112.142:3000/user/signUp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-vercel-protection-bypass": "D1g4beix8PAQYjhUVAd0vbrZgBr0i8Po",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json(); // Parse the response JSON
+  
       console.log(response.status);
-
-      if (response.status == 201) {
-        console.log("success :", response);
-        localStorage.setItem("token", response.data.token);
+  
+      if (response.status === 201) {
+        console.log("success :", data);
+        localStorage.setItem("token", data.token);
         console.log("success");
-        navigate("/");
-        // console.log(localStorage.getItem("token"));
-        // Navigate to the dashboard after successful signup
+        navigate("/"); // Navigate to the dashboard after successful signup
       } else {
-        alert("An error occured" || "An error occurred");
+        alert(data.message || "An error occurred");
       }
     } catch (error) {
-      console.log(error);
-      if (error.response) {
-        console.log(error);
-        alert(error);
-      }
+      console.error("Error:", error);
+      alert("An error occurred. Please try again.");
     } finally {
       setLoading(false); // Set loading to false after the request is complete
     }
   };
-
+  
   if (loading) {
     return (
       <div>
