@@ -22,7 +22,7 @@ const options = {
 };
 
 export default function RegressionSuite() {
-  const { links, handleNuclei, nuclei,fetchList } = useOutletContext();
+  const { links, handleNuclei, nuclei } = useOutletContext();
   console.log(links.apis);
   const [selectedValues, setSelectedValues] = useState({
     tags: null,

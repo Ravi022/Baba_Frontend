@@ -110,40 +110,50 @@ export default function Layout() {
     }
   };
   const handlethirdpartySast = async (payload) => {
-    console.log(payload);
-
+    console.log("Payload:", payload);
+  
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     };
-
+  
     try {
+      console.log("Starting third-party SAST request...");
       const response = await fetch(`http://3.6.112.142:3000/thirdpartySast`, {
         method: "POST",
         headers,
         body: JSON.stringify(payload),
       });
-
+  
+      console.log("Response received.");
+  
       const contentType = response.headers.get("Content-Type");
-
       let data;
+  
       if (contentType && contentType.includes("application/json")) {
         data = await response.json();
       } else {
         data = await response.text();
       }
-
+  
+      console.log("Response Data:", data);
+  
       if (response.ok) {
-        console.log("successNuclei:", data.payload.terminalOut);
-        setThirdPartySast(data);
-        if (data.payload && data.payload.terminalOut) {
-          setTerminalOut(data.payload.terminalOut); // Store terminal output
+        // Ensure extractedIssues and termOut are present in the response data
+        if (data && data.extractedIssues && data.termOut) {
+          console.log("Extracted Issues:", data.extractedIssues);
+          console.log("Terminal Output:", data.termOut);
+  
+          // Update state with the extracted issues and terminal output
+          setThirdPartySast(data);
+          setTerminalOut(data.termOut); // Store terminal output
+        } else {
+          console.warn("Response data is missing expected fields.");
         }
-        console.log("success:", data);
       } else {
         console.warn("Non-200 response:", data);
-        alert("An error occurred");
+        alert("An error occurred while processing the request.");
       }
     } catch (error) {
       console.error("Error submitting data:", error);
@@ -157,6 +167,7 @@ export default function Layout() {
       setLoading(false);
     }
   };
+  
   const handleTestApi = async (payload) => {
     console.log(payload);
 
@@ -309,6 +320,8 @@ export default function Layout() {
               handleTestApi,
               vulnapi,
               handlethirdpartySast,
+              thirdPartySast,
+              terminalOut
             }}
           />
         </div>
